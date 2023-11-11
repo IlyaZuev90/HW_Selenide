@@ -4,6 +4,7 @@ import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -113,15 +114,16 @@ public class CardDeliveryTestSecondTask {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
                 }
-                LocalDate dateMonth = LocalDate.now();
-                LocalDate newMonth = dateMonth.plusMonths(1);
-                borderDate = newMonth.lengthOfMonth();
+                LocalDate dateMonth = LocalDate.now().plusMonths(i);
+                borderDate = dateMonth.plusMonths(i+1).lengthOfMonth();
                 targetMonth = targetMonth + 1;
                 if (targetMonth > 12) {
                     targetMonth = 1;
                     targetYear = targetYear + 1;
                 }
-                if (targetDay <= borderDate) {
+
+                }
+                else {
                     $$("[data-day]").findBy(text(String.valueOf(targetDay))).click();
                     try {
                         Thread.sleep(2000);
@@ -160,10 +162,10 @@ public class CardDeliveryTestSecondTask {
 
         }
 
-    }
+
 
     @Test
-    public void shouldTestSelectingFromCalendarAnyDateWithinPeriodOfHundredDays() {
+    public void shouldTestSelectingFromCalendarAnyDateWithinPeriodOfYear() {
         open("http://localhost:9999");
         try {
             Thread.sleep(5000);
@@ -184,7 +186,7 @@ public class CardDeliveryTestSecondTask {
             Thread.sleep(2000);
         } catch (InterruptedException ex) {
         }
-        int addDays = 90;
+        int addDays = 109;
         int currentDate = LocalDate.now().getDayOfMonth();
         int borderDate = LocalDate.now().lengthOfMonth();
         int targetDay = currentDate + addDays;
@@ -192,21 +194,27 @@ public class CardDeliveryTestSecondTask {
         int targetYear = LocalDate.now().getYear();
         for (int i = 0; i < 12; i++) {
 
+//            LocalDate dateMonth = LocalDate.now();
+
             if (targetDay > borderDate) {
 
-                targetDay = targetDay - borderDate;
                 $("[data-step = '1']").click();
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
                 }
-                LocalDate dateMonth = LocalDate.now();
-                LocalDate newMonth = dateMonth.plusMonths(1);
-                borderDate = newMonth.lengthOfMonth();
+
+                targetDay = targetDay - borderDate;
                 targetMonth = targetMonth + 1;
+
+                if (targetMonth != 12) {
+                    borderDate = LocalDate.now().plusMonths(1).lengthOfMonth();
+                } else borderDate = 31;
+                }
                 if (targetMonth > 12) {
                     targetMonth = 1;
                     targetYear = targetYear + 1;
+                }
                 }
                 if (targetDay <= borderDate) {
                     $$("[data-day]").findBy(text(String.valueOf(targetDay))).click();
@@ -246,6 +254,5 @@ public class CardDeliveryTestSecondTask {
             }
 
         }
-    }
-}
+
 
